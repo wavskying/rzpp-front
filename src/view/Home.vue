@@ -1,43 +1,81 @@
 <template>
   <body style="margin: 0">
-  <el-container style="height: 1000px">
-    <el-header style="background-color: #202329;height: 55px;padding: 5px">
-      <div id="header" style="background-color: #202329">
-        <span data-v-6c36d3c0="" class="el-avatar el-avatar--circle"><img
-          src="../assets/head.png" style="object-fit: cover;"></span>
-      </div>
-    </el-header>
-    <el-main style="background-color: white;height: 145px;padding: 0">
-      <el-row style="height: 90px">
-        <el-col :span="1" style="height: 90px"></el-col>
-        <el-col :span="12" style="height: 90px">
+
+  <el-container style="height: calc(100% - 40px)">
+    <ELHeader></ELHeader>
+    <!--    <el-main style="background-color: white;height: 40px;padding: 0">-->
+
+    <!--    </el-main>-->
+    <el-footer style="background-color: #eef7f9;height: auto;min-height: 100%">
+      <el-row style="height: 60px;background-color: white;width: 100%;display: flex;">
+        <el-col :span="1" style="height: 40px"></el-col>
+        <el-col :span="12" style="height: 40px;width: 100%">
           <div style="margin-top: 15px;">
-            <el-input id="select" placeholder="搜索职位" v-model="select" style="height: 60px;font-size: 30px">
-              <el-button slot="append" icon="el-icon-search" style="height: 60px"></el-button>
+            <el-input id="select" placeholder="搜索职位" v-model="select" style="height: 30px;font-size: 30px">
+              <el-button slot="append" icon="el-icon-search" style="height: 30px" @click="queryTalent"></el-button>
             </el-input>
           </div>
         </el-col>
-        <el-col :span="2" style="height: 90px"></el-col>
-        <el-col :span="6" style="height: 90px">
-
-        </el-col>
-      </el-row>
-      <el-row style="height: 60px">
-        <el-col :span="24" style="height: 60px">
-          <div class="block">
-
+        <el-col :span="8" style="height: 40px;">
+          <div class="block" style="margin-top: 15px">
             <el-cascader
               placeholder="选择职位类型"
+              :props="{ label: 'name', value: 'id' }"
               v-model="value"
               :options="options"
-              :props="{ expandTrigger: 'hover' }"
               @change="handleChange"></el-cascader>
           </div>
         </el-col>
       </el-row>
-    </el-main>
-    <el-footer style="background-color: #eef7f9;height: 788px">
+      <!--      该div是循环卡片列表-->
+      <div style="margin-left:1%;margin-right:1%">
+        <el-row>
+          <el-col :span="5" v-for="(item) in tableData" :key="item.talentId" :offset="1">
+            <div style="margin-top:15px">
+              <el-card :body-style="{ padding: '0px'}" shadow="hover">
+                <div style="height: 200px; width: 310px; display: flex;margin: 0;">
+                  <img :src="item.image" style="width: 100%; height: 100%;" class="image">
+                </div>
+                <!--                <div style="height: 120px">-->
+                <!--                  <span class="card-text">-->
+                <!--                        <span>职位：</span>{{ item.positionName }}-->
+                <!--                        <span>职位：</span>{{ item.name }}-->
+                <!--                        <span>职位：</span>{{ item.cost }}-->
+                <!--                  </span>-->
+                <!--                  <div class="bottom clearfix">-->
+                <!--                    <time class="time"><strong>创建时间:</strong>{{ item.classCreatetime }}</time>-->
+                <!--                    <el-button type="text" class="button" @click="add(item)">查看</el-button>-->
+                <!--                  </div>-->
+                <!--                </div>-->
+                <div class="card-info">
+                  <div class="card-text">
+                    <span class="job-title">职位：{{ item.positionName }}</span>
+                    <span class="job-name">姓名：{{ item.name }}</span>
+                    <span class="job-cost">月薪：{{ item.cost }}</span>
+                  </div>
+                  <div class="card-bottom clearfix">
+                    <time class="create-time"><strong>创建时间:</strong>{{ item.classCreatetime }}</time>
+                    <el-button class="card-btn" type="text" @click="add(item)">查看</el-button>
+                  </div>
+                </div>
 
+              </el-card>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+      <!--      分页div-->
+      <div class="block">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="current_page"
+          :page-sizes="[4,8, 12, 16]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next"
+          :total="total">
+        </el-pagination>
+      </div>
     </el-footer>
   </el-container>
   </body>
@@ -45,212 +83,124 @@
 
 <script>
 import avatarURL from '../assets/head.png'
+import httpRequest from "../utils/httpRequest";
+import ELHeader from "../components/ELHeader";
 
 
 export default {
   name: "Home",
+  components: {
+    ELHeader,
+  },
   data() {
     return {
+      // 首页头像
       avatarURL: avatarURL,
+
+      // 搜索框数据
       select: '',
+
+      /*级联选择器数据*/
       value: [],
-      options: [{
-        value: 'zhinan',
-        label: '指南',
-        children: [{
-          value: 'shejiyuanze',
-          label: '设计原则',
-          children: [{
-            value: 'yizhi',
-            label: '一致'
-          }, {
-            value: 'fankui',
-            label: '反馈'
-          }, {
-            value: 'xiaolv',
-            label: '效率'
-          }, {
-            value: 'kekong',
-            label: '可控'
-          }]
-        }, {
-          value: 'daohang',
-          label: '导航',
-          children: [{
-            value: 'cexiangdaohang',
-            label: '侧向导航'
-          }, {
-            value: 'dingbudaohang',
-            label: '顶部导航'
-          }]
-        }]
-      }, {
-        value: 'zujian',
-        label: '组件',
-        children: [{
-          value: 'basic',
-          label: 'Basic',
-          children: [{
-            value: 'layout',
-            label: 'Layout 布局'
-          }, {
-            value: 'color',
-            label: 'Color 色彩'
-          }, {
-            value: 'typography',
-            label: 'Typography 字体'
-          }, {
-            value: 'icon',
-            label: 'Icon 图标'
-          }, {
-            value: 'button',
-            label: 'Button 按钮'
-          }]
-        }, {
-          value: 'form',
-          label: 'Form',
-          children: [{
-            value: 'radio',
-            label: 'Radio 单选框'
-          }, {
-            value: 'checkbox',
-            label: 'Checkbox 多选框'
-          }, {
-            value: 'input',
-            label: 'Input 输入框'
-          }, {
-            value: 'input-number',
-            label: 'InputNumber 计数器'
-          }, {
-            value: 'select',
-            label: 'Select 选择器'
-          }, {
-            value: 'cascader',
-            label: 'Cascader 级联选择器'
-          }, {
-            value: 'switch',
-            label: 'Switch 开关'
-          }, {
-            value: 'slider',
-            label: 'Slider 滑块'
-          }, {
-            value: 'time-picker',
-            label: 'TimePicker 时间选择器'
-          }, {
-            value: 'date-picker',
-            label: 'DatePicker 日期选择器'
-          }, {
-            value: 'datetime-picker',
-            label: 'DateTimePicker 日期时间选择器'
-          }, {
-            value: 'upload',
-            label: 'Upload 上传'
-          }, {
-            value: 'rate',
-            label: 'Rate 评分'
-          }, {
-            value: 'form',
-            label: 'Form 表单'
-          }]
-        }, {
-          value: 'data',
-          label: 'Data',
-          children: [{
-            value: 'table',
-            label: 'Table 表格'
-          }, {
-            value: 'tag',
-            label: 'Tag 标签'
-          }, {
-            value: 'progress',
-            label: 'Progress 进度条'
-          }, {
-            value: 'tree',
-            label: 'Tree 树形控件'
-          }, {
-            value: 'pagination',
-            label: 'Pagination 分页'
-          }, {
-            value: 'badge',
-            label: 'Badge 标记'
-          }]
-        }, {
-          value: 'notice',
-          label: 'Notice',
-          children: [{
-            value: 'alert',
-            label: 'Alert 警告'
-          }, {
-            value: 'loading',
-            label: 'Loading 加载'
-          }, {
-            value: 'message',
-            label: 'Message 消息提示'
-          }, {
-            value: 'message-box',
-            label: 'MessageBox 弹框'
-          }, {
-            value: 'notification',
-            label: 'Notification 通知'
-          }]
-        }, {
-          value: 'navigation',
-          label: 'Navigation',
-          children: [{
-            value: 'menu',
-            label: 'NavMenu 导航菜单'
-          }, {
-            value: 'tabs',
-            label: 'Tabs 标签页'
-          }, {
-            value: 'breadcrumb',
-            label: 'Breadcrumb 面包屑'
-          }, {
-            value: 'dropdown',
-            label: 'Dropdown 下拉菜单'
-          }, {
-            value: 'steps',
-            label: 'Steps 步骤条'
-          }]
-        }, {
-          value: 'others',
-          label: 'Others',
-          children: [{
-            value: 'dialog',
-            label: 'Dialog 对话框'
-          }, {
-            value: 'tooltip',
-            label: 'Tooltip 文字提示'
-          }, {
-            value: 'popover',
-            label: 'Popover 弹出框'
-          }, {
-            value: 'card',
-            label: 'Card 卡片'
-          }, {
-            value: 'carousel',
-            label: 'Carousel 走马灯'
-          }, {
-            value: 'collapse',
-            label: 'Collapse 折叠面板'
-          }]
-        }]
-      }, {
-        value: 'ziyuan',
-        label: '资源',
-        children: [{
-          value: 'axure',
-          label: 'Axure Components'
-        }, {
-          value: 'sketch',
-          label: 'Sketch Templates'
-        }, {
-          value: 'jiaohu',
-          label: '组件交互文档'
-        }]
-      }],
+      options: [],
+
+      /*循环卡片列表的数据源以及分页数据*/
+      tableData: null,
+      currentPage: 1,
+      total: null,
+      pageSize: 12,
+      listData: {},
+
+      //v-if根据它重新实例化组件
+      reset: false,
     }
-  }
+  },
+  methods: {
+    handleSizeChange: function (size) {
+      this.pageSize = size;
+      this.getTalentByPage()
+    },
+    handleCurrentChange: function (currentPage) {
+      this.currentPage = currentPage;
+      this.getTalentByPage()
+    },
+    getTalentByPage() {
+      httpRequest({
+        method: "get",
+        url: 'talent/getAllByPage',
+        params: {
+          pageNum: this.currentPage,
+          pageSize: this.pageSize
+        },
+      }).then((res) => {
+        if (res.data.code === 200) {
+          this.tableData = res.data.data.data
+          this.reset = true;
+        }
+      })
+    },
+    handleChange(value) {
+      console.log(value);
+      httpRequest({
+        method: "get",
+        url: 'talent/getAllByPage',
+        params: {
+          pageNum: this.currentPage,
+          pageSize: this.pageSize,
+          positionId: value[2],
+        },
+      }).then((res) => {
+        if (res.data.code === 200) {
+          this.tableData = res.data.data.data
+          this.reset = true;
+          this.total = res.data.data.totalCount
+        }
+      })
+    },
+    queryTalent() {
+      httpRequest({
+        method: "get",
+        url: 'talent/getAllByPage',
+        params: {
+          pageNum: this.currentPage,
+          pageSize: this.pageSize,
+          query: this.select,
+        },
+      }).then((res) => {
+        if (res.data.code === 200) {
+          this.tableData = res.data.data.data
+          this.reset = true;
+          this.total = res.data.data.totalCount
+        }
+      })
+    },
+  },
+  mounted() {
+    httpRequest({
+      method: "get",
+      url: 'talent/getAllByPage',
+      params: {
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+      },
+    }).then((res) => {
+      if (res.data.code === 200) {
+        this.tableData = res.data.data.data
+        this.total = res.data.data.totalCount
+      }
+    })
+    httpRequest({
+      method: "get",
+      url: 'position/getRzPositionTree',
+    }).then((res) => {
+      if (res.data.code === 200) {
+        console.log(res.data.data);
+        // 将返回的树形结构数据存储到前端数据模型中
+        this.options = res.data.data;
+        console.log(this.options)
+      }
+    })
+  },
 }
 </script>
 
@@ -281,7 +231,81 @@ export default {
   background-color: #fff;
 }
 
-/deep/ .el-input__inner {
-  height: 60px;
+.time {
+  font-size: 13px;
+  color: #999;
 }
+
+.bottom {
+  margin-top: 13px;
+  line-height: 12px;
+}
+
+.button {
+  padding: 0;
+  float: right;
+}
+
+.image {
+  width: 100%;
+  display: block;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+
+.clearfix:after {
+  clear: both
+}
+
+/*/deep/ .el-input__inner {*/
+/*  height: 60px;*/
+/*}*/
+.card-text {
+  font-size: 8px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.card-text span {
+  font-size: 18px;
+  color: #409EFF;
+  margin-right: 10px;
+}
+
+.card-text br {
+  display: none;
+}
+
+
+.card-info {
+  height: 120px;
+}
+
+.card-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.job-title {
+  font-weight: bold;
+}
+
+.card-bottom {
+  margin-top: 10px;
+}
+
+.create-time {
+  margin-right: 10px;
+}
+
+.card-btn {
+  color: #409EFF;
+}
+
 </style>

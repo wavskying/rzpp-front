@@ -36,17 +36,6 @@
                 <div style="height: 200px; width: 310px; display: flex;margin: 0;">
                   <img :src="item.image" style="width: 100%; height: 100%;" class="image">
                 </div>
-                <!--                <div style="height: 120px">-->
-                <!--                  <span class="card-text">-->
-                <!--                        <span>职位：</span>{{ item.positionName }}-->
-                <!--                        <span>职位：</span>{{ item.name }}-->
-                <!--                        <span>职位：</span>{{ item.cost }}-->
-                <!--                  </span>-->
-                <!--                  <div class="bottom clearfix">-->
-                <!--                    <time class="time"><strong>创建时间:</strong>{{ item.classCreatetime }}</time>-->
-                <!--                    <el-button type="text" class="button" @click="add(item)">查看</el-button>-->
-                <!--                  </div>-->
-                <!--                </div>-->
                 <div class="card-info">
                   <div class="card-text">
                     <span class="job-title">职位：{{ item.positionName }}</span>
@@ -55,7 +44,7 @@
                   </div>
                   <div class="card-bottom clearfix">
                     <time class="create-time"><strong>创建时间:</strong>{{ item.classCreatetime }}</time>
-                    <el-button class="card-btn" type="text" @click="add(item)">查看</el-button>
+                    <el-button class="card-btn" type="text" @click="getInformation(item.id,item.idTwo)">查看</el-button>
                   </div>
                 </div>
 
@@ -135,6 +124,9 @@ export default {
       }).then((res) => {
         if (res.data.code === 200) {
           this.tableData = res.data.data.data
+          this.tableData.forEach(item => {
+            item.tableTalent = item.tableTalent.toString();
+          });
           this.reset = true;
         }
       })
@@ -152,6 +144,9 @@ export default {
       }).then((res) => {
         if (res.data.code === 200) {
           this.tableData = res.data.data.data
+          this.tableData.forEach(item => {
+            item.tableTalent = item.tableTalent.toString();
+          });
           this.reset = true;
           this.total = res.data.data.totalCount
         }
@@ -169,11 +164,17 @@ export default {
       }).then((res) => {
         if (res.data.code === 200) {
           this.tableData = res.data.data.data
-          this.reset = true;
+          this.tableData.forEach(item => {
+            item.tableTalent = item.tableTalent.toString();
+          });
           this.total = res.data.data.totalCount
+          this.reset = true;
         }
       })
     },
+    getInformation(talentId, idTwo) {
+      this.$router.push({path: '/Talent', query: {talentId: talentId, userId: idTwo}})
+    }
   },
   mounted() {
     httpRequest({
@@ -187,6 +188,9 @@ export default {
       if (res.data.code === 200) {
         this.tableData = res.data.data.data
         this.total = res.data.data.totalCount
+        this.tableData.forEach(item => {
+          item.tableTalent = item.tableTalent.toString();
+        });
       }
     })
     httpRequest({

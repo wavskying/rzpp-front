@@ -26,7 +26,6 @@ export default {
   name: "Header",
   methods: {
     goHome() {
-      alert(11)
       this.$router.push({path: '/Home'})
     }
   }

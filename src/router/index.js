@@ -5,6 +5,8 @@ import Login from "../view/Login";
 import Register from "../view/Register";
 import Talent from "../view/Talent";
 import ELHeader from "../components/ELHeader";
+import Communicate from "../components/Communicate";
+import Communicate2 from "../components/Communicate2";
 
 Vue.use(Router)
 
@@ -35,5 +37,15 @@ export default new Router({
       name: 'ELHeader',
       component: ELHeader
     },
+    {
+      path: '/Communicate',
+      name: 'Communicate',
+      component: Communicate
+    },{
+      path: '/Communicate2',
+      name: 'Communicate2',
+      component: Communicate2
+    },
+
   ]
 })

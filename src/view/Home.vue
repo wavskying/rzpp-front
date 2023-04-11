@@ -173,6 +173,7 @@ export default {
       })
     },
     getInformation(talentId, idTwo) {
+      console.log(idTwo)
       this.$router.push({path: '/Talent', query: {talentId: talentId, userId: idTwo}})
     }
   },

@@ -79,7 +79,6 @@ export default {
     ELHeader,
     Communicate,
     Communicate2
-
   },
   name: "Talent",
   data() {
@@ -149,7 +148,7 @@ export default {
         this.talent.information = information.information
         this.talent.image = information.image
         this.receiveId = this.$route.query.userId
-        console.log(res)
+        this.senderId = localStorage.getItem("selfId")
       }
     })
   }

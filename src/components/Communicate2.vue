@@ -28,7 +28,7 @@
       :config="rightConfig"
       @click="rightClick"
     /> -->
-<!--    <JwChat-talk class="rightSlot" :Talelist="talk" :config="quickConfig" @event="bindTalk" />-->
+    <!--    <JwChat-talk class="rightSlot" :Talelist="talk" :config="quickConfig" @event="bindTalk" />-->
     <!-- <template slot="tools">
       <div style="width: 20rem; text-align: right" @click="toolEvent(12)">
         <JwChat-icon type="icon-lishi" title="自定义" />
@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import httpRequest from "../utils/httpRequest";
+
 export default {
   name: "Communicate2",
   props: {
@@ -51,7 +53,7 @@ export default {
       required: true
     }
   },
-  data () {
+  data() {
     return {
       scrollType: 'noroll', // scroll  noroll 俩种类型
       placeholder: "欢迎使用JwChat...",
@@ -141,42 +143,7 @@ export default {
         active: "win01",
         width: "180px",
         listHeight: "60px",
-        list: [
-          {
-            id: "win00",
-            img: "image/cover.png",
-            name: "JwChat",
-            dept: "最简单、最便捷",
-            readNum: 1,
-          },
-          {
-            id: "win01",
-            img: "image/three.jpeg",
-            name: "阳光明媚爱万物",
-            dept: "沙拉黑油",
-            readNum: 12,
-          },
-          {
-            id: "win02",
-            img: "image/two.jpeg",
-            name: "只盼流星不盼雨",
-            dept: "最后说的话",
-            readNum: 12,
-          },
-          {
-            id: "win03",
-            img: "image/one.jpeg",
-            name: "留恋人间不羡仙",
-            dept: "这里可以放万物",
-            readNum: 0,
-          },
-          {
-            id: "win04",
-            img: "image/three.jpeg",
-            name: "阳光明媚爱万物",
-            dept: "官方客服",
-          },
-        ],
+        list: [],
         callback: this.bindWinBar,
       },
     }
@@ -191,7 +158,7 @@ export default {
       const history = new Array(3).fill().map((i, j) => {
         return {
           date: "2020/05/20 23:19:07",
-          text: { text: j + new Date() },
+          text: {text: j + new Date()},
           mine: false,
           name: "JwChat",
           img: "image/three.jpeg",
@@ -206,23 +173,41 @@ export default {
         this.$refs.jwChat.finishPullDown();
       });
     },
-    bindEnter (e) {
+    bindEnter(e) {
       console.log(e)
-      const msg = this.inputMsg
-      if (!msg) return;
-      const msgObj = {
-        "date": "2020/05/20 23:19:07",
-        "text": { "text": msg },
+      // 获取当前时间的时间戳
+      let timestamp = Date.now();
+      // 将时间戳转换为日期对象
+      let date = new Date(timestamp);
+      // 格式化日期，比如："2022-04-10 14:30:00"
+      let formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+      this.taleList.push({
+        "date": formattedDate,
+        "text": {"text": e},
         "mine": true,
-        "name": "JwChat",
-        "img": "../image/three.jpeg"
-      }
-      this.list.push(msgObj)
+        "name": this.config.name,
+        "img": this.config.img
+      })
+      httpRequest({
+        method: "get",
+        url: 'Communicate/addMessage',
+        params: {
+          senderId: this.senderId,
+          receiveId: this.receiveId,
+          content: e,
+          createTime: timestamp
+        },
+      }).then((res) => {
+        if (res.data.code === 200) {
+
+        }
+      })
+
     },
-    toolEvent (type, obj) {
+    toolEvent(type, obj) {
       console.log('tools', type, obj)
     },
-    talkEvent (play) {
+    talkEvent(play) {
       console.log(play)
     },
     rightClick(type) {
@@ -230,7 +215,7 @@ export default {
     },
     bindTalk(play) {
       console.log("talk", play);
-      const { key, value } = play;
+      const {key, value} = play;
       if (key === "navIndex")
         this.talk = [1, 1, 1, 1, 1, 1, 1, 1].reduce((p) => {
           p.push("随机修改颜色 #" + Math.random().toString(16).substr(-6));
@@ -245,87 +230,116 @@ export default {
       }
     },
   },
-  mounted () {
+  mounted() {
+    this.config.img = localStorage.getItem("image")
+    this.config.name = localStorage.getItem("name")
+    console.log(this.config.img)
+    httpRequest({
+      method: "get",
+      url: 'Communicate/getSessionListBySenderId',
+      params: {
+        senderId: this.senderId
+      },
+    }).then((res) => {
+      if (res.data.code === 200) {
+        this.winBarConfig.list = res.data.data
+      }
+    })
+    httpRequest({
+      method: "get",
+      url: 'Communicate/getHistoryMessage',
+      params: {
+        senderId: this.senderId,
+        receiveId: this.receiveId
+      },
+    }).then((res) => {
+      if (res.data.code === 200) {
+        this.taleList = res.data.data
+      }
+    })
+
+
     const img = 'https://www.baidu.com/img/flexible/logo/pc/result.png'
-    const list = [
-      {
-        "date": "2020/04/25 21:19:07",
-        "text": { "text": "起床不" },
-        "mine": false,
-        "name": "留恋人间不羡仙",
-        "img": "../image/one.jpeg"
-      },
-      {
-        "date": "2020/04/25 21:19:07",
-        "text": { "text": "<audio data-src='https://www.w3school.com.cn/i/horse.mp3'/>" },
-        "mine": false,
-        "name": "只盼流星不盼雨",
-        "img": "../image/two.jpeg"
-      },
-      {
-        "date": "2020/04/25 21:19:07",
-        "text": { "text": "<img data-src='"+img+"'/>" },
-        "mine": false,
-        "name": "只盼流星不盼雨",
-        "img": "../image/two.jpeg"
-      },
-      {
-        "date": "2020/04/25 21:19:07",
-        "text": { "text": "<img data-src='../image/three.jpeg'/>" },
-        "mine": false,
-        "name": "只盼流星不盼雨",
-        "img": "../image/two.jpeg"
-      },
-      {
-        "date": "2020/04/16 21:19:07",
-        "text": { "text": "<video data-src='https://www.w3school.com.cn/i/movie.mp4' controls='controls' />" },
-        "mine": true,
-        "name": "JwChat",
-        "img": "../image/three.jpeg"
-      },
-      {
-        "date": "2021/03/02 13:14:21",
-        "mine": false,
-        "name": "留恋人间不羡仙",
-        "img": "../image/one.jpeg",
-        "text": {
-          system: {
-            title: '在接入人工前，智能助手将为您首次应答。',
-            subtitle: '猜您想问:',
-            content: [
-              {
-                id: `system1`,
-                text: '组件如何使用'
-              },
-              {
-                id: `system2`,
-                text: '组件参数在哪里查看'
-              },
-              {
-                id: 'system',
-                text: '我可不可把组件用在商业'
-              }
-            ]
-          }
-        }
-      },
-      {
-        "date": "2020/04/25 21:19:07",
-        "text": {
-          "text": "<i class='el-icon-document-checked' style='font-size:2rem;'/>",
-          "subLink":{
-            "text": "a.txt",
-            "prop": {
-              underline: false
-            }
-          },
-        },
-        "mine": false,
-        "name": "留恋人间不羡仙",
-        "img": "../image/one.jpeg"
-      },
-    ]
-    this.taleList = list
+
+    // const list = [
+    //   {
+    //     "date": "2020/04/25 21:19:07",
+    //     "text": { "text": "起床不" },
+    //     "mine": false,
+    //     "name": "留恋人间不羡仙",
+    //     "img": "../image/one.jpeg"
+    //   },
+    //   {
+    //     "date": "2020/04/25 21:19:07",
+    //     "text": { "text": "<audio data-src='https://www.w3school.com.cn/i/horse.mp3'/>" },
+    //     "mine": false,
+    //     "name": "只盼流星不盼雨",
+    //     "img": "../image/two.jpeg"
+    //   },
+    //   {
+    //     "date": "2020/04/25 21:19:07",
+    //     "text": { "text": "<img data-src='"+img+"'/>" },
+    //     "mine": false,
+    //     "name": "只盼流星不盼雨",
+    //     "img": "../image/two.jpeg"
+    //   },
+    //   {
+    //     "date": "2020/04/25 21:19:07",
+    //     "text": { "text": "<img data-src='../image/three.jpeg'/>" },
+    //     "mine": false,
+    //     "name": "只盼流星不盼雨",
+    //     "img": "../image/two.jpeg"
+    //   },
+    //   {
+    //     "date": "2020/04/16 21:19:07",
+    //     "text": { "text": "<video data-src='https://www.w3school.com.cn/i/movie.mp4' controls='controls' />" },
+    //     "mine": true,
+    //     "name": "JwChat",
+    //     "img": "../image/three.jpeg"
+    //   },
+    //   {
+    //     "date": "2021/03/02 13:14:21",
+    //     "mine": false,
+    //     "name": "留恋人间不羡仙",
+    //     "img": "../image/one.jpeg",
+    //     "text": {
+    //       system: {
+    //         title: '在接入人工前，智能助手将为您首次应答。',
+    //         subtitle: '猜您想问:',
+    //         content: [
+    //           {
+    //             id: `system1`,
+    //             text: '组件如何使用'
+    //           },
+    //           {
+    //             id: `system2`,
+    //             text: '组件参数在哪里查看'
+    //           },
+    //           {
+    //             id: 'system',
+    //             text: '我可不可把组件用在商业'
+    //           }
+    //         ]
+    //       }
+    //     }
+    //   },
+    //   {
+    //     "date": "2020/04/25 21:19:07",
+    //     "text": {
+    //       "text": "<i class='el-icon-document-checked' style='font-size:2rem;'/>",
+    //       "subLink":{
+    //         "text": "a.txt",
+    //         "prop": {
+    //           underline: false
+    //         }
+    //       },
+    //     },
+    //     "mine": false,
+    //     "name": "留恋人间不羡仙",
+    //     "img": "../image/one.jpeg"
+    //   },
+    // ]
+    // this.taleList = list
   }
 }
 </script>

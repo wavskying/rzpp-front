@@ -44,8 +44,12 @@ export default {
         },
       }).then((res) => {
         if (res.data.code === 200) {
-          localStorage.setItem("token",res.data.data.token)
-          localStorage.setItem("selfId",res.data.data.userId)
+
+          localStorage.setItem("token", res.data.data.token)
+          localStorage.setItem("selfId", res.data.data.id)
+          localStorage.setItem("name", res.data.data.name)
+          localStorage.setItem("image", res.data.data.image)
+
           this.$message({
             message: '恭喜你，登陆成功',
             type: 'success'

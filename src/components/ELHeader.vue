@@ -4,10 +4,22 @@
       <el-col :span="2" class="logo">
         <img src="../assets/logo.png" alt="logo" style="height: 50px;width: 50px">
       </el-col>
-      <el-col :span="4">
+      <el-col :span="6">
         <el-button-group>
-          <el-button type="primary" class="home-button" @click="goHome" style="height: 55px;background-color: #202329">首页</el-button>
-          <el-button type="primary" class="home-button" @click="goHome" style="height: 55px;background-color: #202329">订单</el-button>
+          <el-button type="primary" class="home-button" @click="goHome" style="height: 55px;background-color: #202329">
+            首页
+          </el-button>
+          <el-button type="primary" class="home-button" @click="goOrder" style="height: 55px;background-color: #202329">
+            我的订单
+          </el-button>
+          <el-button type="primary" class="home-button" @click="goTalentPool"
+                     style="height: 55px;background-color: #202329">
+            人才库
+          </el-button>
+          <el-button type="primary" class="home-button" @click="goCommunicate"
+                     style="height: 55px;background-color: #202329">
+            我的消息
+          </el-button>
         </el-button-group>
       </el-col>
       <el-col :span="16">
@@ -17,18 +29,51 @@
         </div>
       </el-col>
     </el-row>
+    <el-dialog
+      title="沟通"
+      :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
+      :width="'60%'"
+      :height="'60%'"
+      style="padding: 0px"
+      :key="Date.now()"
+    >
+      <div style="width: 100%; height: 100%;">
+        <Communicate :sender-id="senderId" :receive-id="receiveId" style="width: 100%; height: 100%;"/>
+      </div>
+    </el-dialog>
   </el-header>
 </template>
 
 <script>
+import Communicate from "./Communicate";
 
 export default {
   name: "Header",
+  components: {
+    Communicate
+  },
   methods: {
     goHome() {
       this.$router.push({path: '/Home'})
+    },
+    goOrder() {
+      this.$router.push({path: '/MyOrder'})
+    },
+    goTalentPool() {
+      this.$router.push({path: '/TalentPool'})
+    },
+    goCommunicate() {
+      this.dialogVisible = true
     }
-  }
+  },
+  data() {
+    return {
+      senderId: "",
+      receiveId: "",
+      dialogVisible: false
+    }
+  },
 }
 </script>
 
@@ -37,19 +82,23 @@ export default {
   height: 100vh;
   width: 100vw;
 }
+
 .logo {
   text-align: center;
 }
+
 .search-input {
   width: 200px;
   margin-right: 20px;
 }
+
 .home-button {
   height: 30px;
   margin-left: 10px;
   border: none;
 
 }
+
 .home-button:hover {
   border: 1px solid #666;
   color: #409EFF;

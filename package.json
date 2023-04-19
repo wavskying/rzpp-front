@@ -10,6 +10,8 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@smallwei/avue": "^2.10.11",
+    "ant-design-vue": "1.5.4",
     "axios": "^1.3.3",
     "element-ui": "^2.15.13",
     "jwchat": "^1.0.12",

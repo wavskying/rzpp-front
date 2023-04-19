@@ -27,7 +27,8 @@
           </div>
         </el-col>
       </el-row>
-      <!--      该div是循环卡片列表-->
+
+<!--            该div是循环卡片列表-->
       <div style="margin-left:1%;margin-right:1%">
         <el-row>
           <el-col :span="5" v-for="(item) in tableData" :key="item.talentId" :offset="1">
@@ -53,6 +54,8 @@
           </el-col>
         </el-row>
       </div>
+
+
       <!--      分页div-->
       <div class="block">
         <el-pagination
@@ -210,6 +213,15 @@ export default {
 </script>
 
 <style scoped>
+el-footer {
+  background-color: #ffdbc2;
+  /*background-image: url('your-image-url');*/
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: auto;
+  min-height: 100%;
+}
+
 .el-avatar {
   display: inline-block;
   -webkit-box-sizing: border-box;

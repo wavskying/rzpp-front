@@ -2,6 +2,9 @@
   <body id="poster">
 
   <el-form class="login-container" label-position="left" label-width="0px">
+    <div class="title">
+      <h1>人职匹配推荐系统</h1>
+    </div>
     <h3 class="login_title">
       系统登陆
       <el-button type="primary" @click="toRegister()">点我注册</el-button>
@@ -67,12 +70,41 @@ export default {
 
 <style scoped>
 #poster {
-  background-position: center;
+  /*background-position: center;*/
   height: 100%;
   width: 100%;
   background-size: cover;
   position: fixed;
+  background: linear-gradient(45deg, #8c52ff, #5f2c82, #1f0a3c);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
 }
+
+.el-input__inner:focus {
+  border-color: #8c52ff !important;
+  box-shadow: 0 0 10px #8c52ff !important;
+  transition: all .3s;
+}
+.el-button {
+  transition: transform 0.3s;
+}
+
+.el-button:active {
+  transform: scale(0.95);
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 
 body {
   margin: 0px;
@@ -89,6 +121,22 @@ body {
   border: 1px solid #eaeaea;
   box-shadow: 0 0 25px #cac6c6;
 }
+
+.login_title {
+  margin: 0px auto 40px auto;
+  text-align: center;
+  color: #505458;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8);
+}
+
 
 .login_title {
   margin: 0px auto 40px auto;

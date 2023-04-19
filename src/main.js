@@ -13,6 +13,10 @@ import 'lemon-imui/dist/index.css';
 import Chat from 'vue-beautiful-chat'
 import JwChat from 'jwchat';
 
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/antd.css';
+
+Vue.use(Antd);
 
 Vue.config.productionTip = false
 

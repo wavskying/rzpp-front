@@ -6,7 +6,10 @@ import Register from "../view/Register";
 import Talent from "../view/Talent";
 import ELHeader from "../components/ELHeader";
 import Communicate from "../components/Communicate";
-import Communicate2 from "../components/Communicate2";
+import Order from "../view/Order";
+import Success from "../view/Success";
+import MyOrder from "../view/MyOrder";
+import TalentPool from "../view/TalentPool";
 
 Vue.use(Router)
 
@@ -41,11 +44,26 @@ export default new Router({
       path: '/Communicate',
       name: 'Communicate',
       component: Communicate
-    },{
-      path: '/Communicate2',
-      name: 'Communicate2',
-      component: Communicate2
     },
-
+    {
+      path: '/Order',
+      name: 'Order',
+      component: Order
+    },
+    {
+      path: '/Success',
+      name: 'Success',
+      component: Success
+    },
+    {
+      path: '/MyOrder',
+      name: 'MyOrder',
+      component: MyOrder
+    },
+    {
+      path: '/TalentPool',
+      name: 'TalentPool',
+      component: TalentPool
+    },
   ]
 })

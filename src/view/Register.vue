@@ -1,6 +1,9 @@
 <template>
   <body id="poster">
   <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="0px" class="register-container">
+    <div class="title">
+      <h1>人职匹配推荐系统</h1>
+    </div>
     <h3 class="register_title">
       系统注册
       <el-button type="primary" @click="toLogin()">点我登陆</el-button>
@@ -122,11 +125,47 @@ export default {
 
 <style scoped>
 #poster {
-  background-position: center;
+  /*background-position: center;*/
   height: 100%;
   width: 100%;
   background-size: cover;
   position: fixed;
+  background: linear-gradient(45deg, #8c52ff, #5f2c82, #1f0a3c);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+}
+
+.el-input__inner:focus {
+  border-color: #8c52ff !important;
+  box-shadow: 0 0 10px #8c52ff !important;
+  transition: all .3s;
+}
+.el-button {
+  transition: transform 0.3s;
+}
+
+.el-button:active {
+  transform: scale(0.95);
+}
+.title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8);
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 body {

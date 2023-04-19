@@ -23,6 +23,16 @@
             </el-button>
 
           </div>
+          <!-- 聊天通信入口 -->
+          <div style="text-align: right; margin-top: 10px;">
+            <el-button type="success" circle style="font-size: 20px;" @click="handleOrder">
+            <span style="display: flex; align-items: center;">
+              <el-icon class="icon-communication"/>
+              <span style="margin-left: 0px;">下单</span>
+            </span>
+            </el-button>
+
+          </div>
         </div>
 
         <!-- 技能列表 -->
@@ -57,9 +67,10 @@
         :width="'60%'"
         :height="'60%'"
         style="padding: 0px"
+        :key="Date.now()"
       >
         <div style="width: 100%; height: 100%;">
-          <Communicate2 :sender-id="senderId" :receive-id="receiveId" style="width: 100%; height: 100%;"/>
+          <Communicate :sender-id="senderId" :receive-id="receiveId" style="width: 100%; height: 100%;"/>
         </div>
       </el-dialog>
     </el-footer>
@@ -70,7 +81,6 @@
 <script>
 import ELHeader from "../components/ELHeader";
 import Communicate from "../components/Communicate";
-import Communicate2 from "../components/Communicate2";
 import httpRequest from "../utils/httpRequest";
 
 
@@ -78,12 +88,11 @@ export default {
   components: {
     ELHeader,
     Communicate,
-    Communicate2
   },
   name: "Talent",
   data() {
     return {
-      senderId : "",
+      senderId: "",
       receiveId: "",
       dialogVisible: false,
       talent: {
@@ -94,6 +103,7 @@ export default {
         information: "",
         image: "https://randomuser.me/api/portraits/men/32.jpg",
         skills: [],
+        cost: ""
       },
       comments: [
         {
@@ -130,6 +140,19 @@ export default {
     handleCommunication() {
       this.dialogVisible = true
     },
+    handleOrder() {
+      this.$router.push({
+        path: '/Order',
+        query: {
+          talentId: this.$route.query.talentId,
+          talentName: this.talent.name,
+          talentSex: this.talent.sex,
+          talentCost: this.talent.cost,
+          talentAge: this.talent.age,
+          talentPositionName: this.talent.positionName,
+        }
+      })
+    }
   },
   mounted() {
     httpRequest({
@@ -148,6 +171,7 @@ export default {
         this.talent.information = information.information
         this.talent.image = information.image
         this.receiveId = this.$route.query.userId
+        this.talent.cost = information.cost
         this.senderId = localStorage.getItem("selfId")
       }
     })

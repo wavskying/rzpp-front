@@ -9,7 +9,7 @@ import Communicate from "../components/Communicate";
 import Order from "../view/Order";
 import Success from "../view/Success";
 import MyOrder from "../view/MyOrder";
-import TalentPool from "../view/TalentPool";
+import Index from "../view";
 
 Vue.use(Router)
 
@@ -61,9 +61,9 @@ export default new Router({
       component: MyOrder
     },
     {
-      path: '/TalentPool',
-      name: 'TalentPool',
-      component: TalentPool
+      path: '/Index',
+      name: 'Index',
+      component: Index
     },
   ]
 })

@@ -6,12 +6,13 @@
     <!--    <el-main style="background-color: white;height: 40px;padding: 0">-->
 
     <!--    </el-main>-->
-    <el-footer style="background-color: #eef7f9;height: auto;min-height: 100%">
+    <el-footer style="background-color: #cde8ff;height: auto;min-height: 100%">
       <el-row style="height: 60px;background-color: white;width: 100%;display: flex;">
         <el-col :span="1" style="height: 40px"></el-col>
         <el-col :span="12" style="height: 40px;width: 100%">
           <div style="margin-top: 15px;">
-            <el-input id="select" placeholder="搜索职位" v-model="select" style="height: 30px;font-size: 30px">
+            <el-input id="select" placeholder="搜索关键字" v-model="select"
+                      style="height: 30px;font-size: 30px;width: 1000px">
               <el-button slot="append" icon="el-icon-search" style="height: 30px" @click="queryTalent"></el-button>
             </el-input>
           </div>
@@ -19,56 +20,81 @@
         <el-col :span="8" style="height: 40px;">
           <div class="block" style="margin-top: 15px">
             <el-cascader
-              placeholder="选择职位类型"
+              placeholder="职位类型"
               :props="{ label: 'name', value: 'id' }"
               v-model="value"
               :options="options"
-              @change="handleChange"></el-cascader>
+              @change="handleChange" style="width: 150px"></el-cascader>
           </div>
         </el-col>
       </el-row>
 
-<!--            该div是循环卡片列表-->
-      <div style="margin-left:1%;margin-right:1%">
-        <el-row>
-          <el-col :span="5" v-for="(item) in tableData" :key="item.talentId" :offset="1">
-            <div style="margin-top:15px">
-              <el-card :body-style="{ padding: '0px'}" shadow="hover">
-                <div style="height: 200px; width: 310px; display: flex;margin: 0;">
-                  <img :src="item.image" style="width: 100%; height: 100%;" class="image">
-                </div>
-                <div class="card-info">
-                  <div class="card-text">
-                    <span class="job-title">职位：{{ item.positionName }}</span>
-                    <span class="job-name">姓名：{{ item.name }}</span>
-                    <span class="job-cost">月薪：{{ item.cost }}</span>
-                  </div>
-                  <div class="card-bottom clearfix">
-                    <time class="create-time"><strong>创建时间:</strong>{{ item.classCreatetime }}</time>
-                    <el-button class="card-btn" type="text" @click="getInformation(item.id,item.idTwo)">查看</el-button>
-                  </div>
-                </div>
-
-              </el-card>
-            </div>
+      <!--            该div是循环卡片列表-->
+      <el-row :gutter="60">
+        <div style="margin-bottom: 15px;">
+          <el-col :span="4.9" v-for="item in tableData" :key="item.talentId">
+            <a-card hoverable style="width: 100%;padding: 5px;margin-bottom: 7px"
+                    @click="getInformation(item.id,item.idTwo)">
+              <img style="height: 200px;width: 230px"
+                   slot="cover"
+                   alt="example"
+                   :src="item.image"
+              />
+              <template slot="actions" class="ant-card-actions">
+                <a-icon key="setting" type="setting"/>
+                <a-icon key="edit" type="edit"/>
+                <a-icon key="ellipsis" type="ellipsis"/>
+              </template>
+              <a-card-meta :title=item.name :description=item.positionName>
+                <a-avatar
+                  slot="avatar"
+                  src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                />
+              </a-card-meta>
+            </a-card>
           </el-col>
-        </el-row>
+        </div>
+      </el-row>
+
+      <div style="margin-left:1%;margin-right:1%">
+        <!--          <el-col :span="5" v-for="(item) in tableData" :key="item.talentId" :offset="1">-->
+        <!--            <div style="margin-top:15px">-->
+        <!--              <el-card :body-style="{ padding: '0px'}" shadow="hover">-->
+        <!--                <div style="height: 150px; width: 250px; display: flex;margin: 0;">-->
+        <!--                  <img :src="item.image" style="width: 100%; height: 100%;" class="image">-->
+        <!--                </div>-->
+        <!--                <div class="card-info">-->
+        <!--                  <div class="card-text">-->
+        <!--                    <span class="job-title">职位：{{ item.positionName }}</span>-->
+        <!--                    <span class="job-name">姓名：{{ item.name }}</span>-->
+        <!--                    <span class="job-cost">月薪：{{ item.cost }}</span>-->
+        <!--                  </div>-->
+        <!--                  <div class="card-bottom clearfix">-->
+        <!--                    <time class="create-time"><strong>创建时间:</strong>{{ item.classCreatetime }}</time>-->
+        <!--                    <el-button class="card-btn" type="text" @click="getInformation(item.id,item.idTwo)">查看</el-button>-->
+        <!--                  </div>-->
+        <!--                </div>-->
+
+        <!--              </el-card>-->
+        <!--            </div>-->
+        <!--          </el-col>-->
+
       </div>
 
 
-      <!--      分页div-->
-      <div class="block">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="current_page"
-          :page-sizes="[4,8, 12, 16]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next"
-          :total="total">
-        </el-pagination>
-      </div>
     </el-footer>
+    <!--      分页div-->
+    <div class="block">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="current_page"
+        :page-sizes="[25,30,60]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next"
+        :total="total">
+      </el-pagination>
+    </div>
   </el-container>
   </body>
 </template>
@@ -100,7 +126,7 @@ export default {
       tableData: null,
       currentPage: 1,
       total: null,
-      pageSize: 12,
+      pageSize: 25,
       listData: {},
 
       //v-if根据它重新实例化组件
@@ -176,7 +202,6 @@ export default {
       })
     },
     getInformation(talentId, idTwo) {
-      console.log(idTwo)
       this.$router.push({path: '/Talent', query: {talentId: talentId, userId: idTwo}})
     }
   },
@@ -324,5 +349,4 @@ el-footer {
 .card-btn {
   color: #409EFF;
 }
-
 </style>

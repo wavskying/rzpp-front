@@ -5,10 +5,11 @@
       <el-card style="margin: 20px 40px; display: flex; flex-direction: column;">
         <!-- 人才基本信息 -->
         <div style="display: flex; align-items: center; margin-top: 20px;">
-          <div style="margin-right: 20px;">
-            <el-avatar size="100px" shape="square" :src="talent.image"></el-avatar>
+          <div style="margin-right: 20px; width: 300px">
+            <!--            <el-avatar size="auto" shape="square" :src="talent.image"></el-avatar>-->
+            <img :src="talent.image" style="width: 200px;height: 200px">
           </div>
-          <div>
+          <div style="width: 1000px">
             <h2>{{ talent.name }}</h2>
             <p>{{ talent.sex }} | {{ talent.age }}岁 | {{ talent.positionName }}</p>
             <p>{{ talent.information }}</p>
@@ -23,7 +24,7 @@
             </el-button>
 
           </div>
-          <!-- 聊天通信入口 -->
+          <!-- 下单 -->
           <div style="text-align: right; margin-top: 10px;">
             <el-button type="success" circle style="font-size: 20px;" @click="handleOrder">
             <span style="display: flex; align-items: center;">
@@ -138,25 +139,34 @@ export default {
       }
     },
     handleCommunication() {
-      this.dialogVisible = true
+      if (localStorage.getItem("roleId") === "1") {
+        this.dialogVisible = true
+      } else {
+        this.$message.info('您没有此权限');
+      }
     },
     handleOrder() {
-      this.$router.push({
-        path: '/Order',
-        query: {
-          talentId: this.$route.query.talentId,
-          talentName: this.talent.name,
-          talentSex: this.talent.sex,
-          talentCost: this.talent.cost,
-          talentAge: this.talent.age,
-          talentPositionName: this.talent.positionName,
-        }
-      })
+      if (localStorage.getItem("roleId") === "1") {
+        this.$router.push({
+          path: '/Order',
+          query: {
+            talentId: this.$route.query.talentId,
+            talentName: this.talent.name,
+            talentSex: this.talent.sex,
+            talentCost: this.talent.cost,
+            talentAge: this.talent.age,
+            talentPositionName: this.talent.positionName,
+            manageUserId: this.$route.query.userId
+          }
+        })
+      } else {
+        this.$message.info('您没有此权限');
+      }
     }
   },
   mounted() {
     httpRequest({
-      method: "get",
+      method: "Get",
       url: 'talent/getTalentInformation',
       params: {
         talentId: this.$route.query.talentId

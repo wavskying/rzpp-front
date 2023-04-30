@@ -6,15 +6,15 @@
       </el-col>
       <el-col :span="6">
         <el-button-group>
-          <el-button type="primary" class="home-button" @click="goHome" style="height: 55px;background-color: #202329">
+          <el-button type="primary" class="home-button" @click="goIndex" style="height: 55px;background-color: #202329">
             首页
+          </el-button>
+          <el-button type="primary" class="home-button" @click="goHome"
+                     style="height: 55px;background-color: #202329">
+            人才库
           </el-button>
           <el-button type="primary" class="home-button" @click="goOrder" style="height: 55px;background-color: #202329">
             我的订单
-          </el-button>
-          <el-button type="primary" class="home-button" @click="goTalentPool"
-                     style="height: 55px;background-color: #202329">
-            人才库
           </el-button>
           <el-button type="primary" class="home-button" @click="goCommunicate"
                      style="height: 55px;background-color: #202329">
@@ -22,10 +22,18 @@
           </el-button>
         </el-button-group>
       </el-col>
-      <el-col :span="16">
-        <div id="header" style="background-color: #202329">
+      <el-col :span="12">
+        <p>&nbsp </p>
+      </el-col>
+      <el-col :span="1">
+        <div id="header" style="padding-top: 6px;">
         <span data-v-6c36d3c0="" class="el-avatar el-avatar--circle"><img
-          src="../assets/head.png" style="object-fit: cover;"></span>
+          src="../assets/head.png" style="object-fit: cover;"/></span>
+        </div>
+      </el-col>
+      <el-col :span="2">
+        <div style="padding-top: 17px;color: white">
+          <a style="color:white;">{{ name }}</a>
         </div>
       </el-col>
     </el-row>
@@ -60,18 +68,23 @@ export default {
     goOrder() {
       this.$router.push({path: '/MyOrder'})
     },
-    goTalentPool() {
-      this.$router.push({path: '/TalentPool'})
-    },
     goCommunicate() {
       this.dialogVisible = true
+    },
+    goIndex() {
+      this.$router.push({path: '/Index'})
     }
   },
+  mounted() {
+    this.name = localStorage.getItem("name")
+  },
+
   data() {
     return {
-      senderId: "",
+      senderId: localStorage.getItem("selfId"),
       receiveId: "",
-      dialogVisible: false
+      dialogVisible: false,
+      name: '',
     }
   },
 }
@@ -102,5 +115,20 @@ export default {
 .home-button:hover {
   border: 1px solid #666;
   color: #409EFF;
+}
+
+element.style {
+  background-color: rgb(32, 35, 41);
+  color: white;
+  padding-top: 6px;
+}
+
+/deep/ .el-dialog__body {
+  padding: 0;
+}
+
+.el-dialog {
+  max-height: 80vh;
+  max-width: 80vw;
 }
 </style>

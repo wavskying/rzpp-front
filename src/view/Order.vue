@@ -91,7 +91,6 @@ export default {
     this.age = this.$route.query.talentAge
     this.positionType = this.$route.query.talentPositionName
     this.cost = this.$route.query.talentCost
-
   },
   methods: {
     handleHireTimeChange(value) {
@@ -99,14 +98,19 @@ export default {
     },
     submitOrderForm() {
       let talentId = this.$route.query.talentId
+      let manageUserId = this.$route.query.manageUserId
+      let talentName = this.$route.query.talentName
       httpRequest({
         method: "post",
-        url: '/Communicate/addOrder',
+        url: '/order/addOrder',
         params: {
           employerId: localStorage.getItem("selfId"),
           talentId: talentId,
           hireTime: this.orderForm.hireTime,
-          hireMoney: this.paymentMoney
+          hireMoney: this.paymentMoney,
+          userId: localStorage.getItem("selfId"),
+          manageUserId: manageUserId,
+          talentName: talentName
         },
       }).then((res) => {
         if (res.data.code === 200) {

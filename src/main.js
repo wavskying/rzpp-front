@@ -16,6 +16,17 @@ import JwChat from 'jwchat';
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 
+
+import store from "./store";
+
+import "./styles/base.css";
+import "./styles/common.css";
+import "element-ui/lib/theme-chalk/index.css";
+import "@/assets/iconfont/iconfont.css";
+
+ElementUI.Dialog.props.closeOnClickModal.default = false;
+Vue.config.productionTip = false;
+
 Vue.use(Antd);
 
 Vue.config.productionTip = false
@@ -30,6 +41,7 @@ Vue.use(JwChat)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
   components: {App},
   template: '<App/>'

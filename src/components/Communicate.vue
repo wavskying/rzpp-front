@@ -127,14 +127,38 @@ export default {
     }
   },
   methods: {
+    getHistoryMessage() {
+      httpRequest({
+        method: "get",
+        url: 'Communicate/getHistoryMessage',
+        params: {
+          senderId: this.senderId,
+          receiveId: this.receiveId
+        },
+      }).then((res) => {
+        if (res.data.code === 200) {
+          this.taleList = res.data.data
+        }
+      })
+    },
     connect() {
-      alert(111)
       const userId = this.senderId; // 替换成当前用户的id
-      this.socket = new WebSocket(`ws://localhost:8080/chat?userId=${userId}`);
+      this.socket = new WebSocket("ws://localhost:8080/imserver/" + this.senderId);
+      const self = this;
+      this.socket.onmessage = function (msg) {
+        console.log(msg.data)
+        console.log(this.senderId)
+        if (self.receiveId === msg.data) {
+          self.getHistoryMessage()
+        }
+      };
+
+
       this.socket.addEventListener("open", () => {
         this.connected = true;
       });
       this.socket.addEventListener("message", (event) => {
+        alert(message)
         this.taleList.push(event.data);
       });
     },
@@ -245,7 +269,7 @@ export default {
         receiveId: this.receiveId
       },
     }).then((res) => {
-      if (res.data.code === 200) {
+      if (true) {
         httpRequest({
           method: "get",
           url: 'Communicate/getSessionListBySenderId',
@@ -260,18 +284,20 @@ export default {
         )
       }
     })
-    httpRequest({
-      method: "get",
-      url: 'Communicate/getHistoryMessage',
-      params: {
-        senderId: this.senderId,
-        receiveId: this.receiveId
-      },
-    }).then((res) => {
-      if (res.data.code === 200) {
-        this.taleList = res.data.data
-      }
-    })
+    if (this.receiveId !== "") {
+      httpRequest({
+        method: "get",
+        url: 'Communicate/getHistoryMessage',
+        params: {
+          senderId: this.senderId,
+          receiveId: this.receiveId
+        },
+      }).then((res) => {
+        if (res.data.code === 200) {
+          this.taleList = res.data.data
+        }
+      })
+    }
     this.connect();
     // const img = 'https://www.baidu.com/img/flexible/logo/pc/result.png'
   }

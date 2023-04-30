@@ -52,12 +52,18 @@ export default {
           localStorage.setItem("selfId", res.data.data.id)
           localStorage.setItem("name", res.data.data.name)
           localStorage.setItem("image", res.data.data.image)
+          localStorage.setItem("roleId", res.data.data.roleId)
 
           this.$message({
             message: '恭喜你，登陆成功',
             type: 'success'
           });
-          this.$router.push({path: '/Home'})
+          this.$router.push({path: '/Index'})
+        } else {
+          this.$message({
+            message: '登录失败，请检查您的用户名和密码是否正确',
+            type: 'error'
+          });
         }
       })
     },
@@ -85,6 +91,7 @@ export default {
   box-shadow: 0 0 10px #8c52ff !important;
   transition: all .3s;
 }
+
 .el-button {
   transition: transform 0.3s;
 }
